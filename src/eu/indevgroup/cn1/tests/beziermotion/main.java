@@ -36,12 +36,19 @@ public class main {
             current.show();
             return;
         }
-        Form hi = new Form("Custom Motion Test");
+        Form hi = new Form("");
+        
+        Container container = new Container(new BorderLayout());
         Container controlContainer = new Container(new BorderLayout());
         Container spinnersContainer = new Container (new TableLayout(4, 2));
         
+        
+        final Label animatedLabel = new Label("Label");
+        final CustomMotionContainer animateZone = new CustomMotionContainer(new BorderLayout());
+        animateZone.addComponent(BorderLayout.WEST,animatedLabel);
+        
         final BezierVisualisator visualisator = new BezierVisualisator();
-        visualisator.setBezier(0.0, 0.0, 0.0, 0.0);
+        visualisator.setBezier(0.0, 0.0, 0.0, 1.0);
         controlContainer.addComponent(BorderLayout.CENTER, visualisator);
         
         final double minValue = -2.0;
@@ -52,12 +59,18 @@ public class main {
         final Label beginYl = new Label("0.0");
         final Label endXl = new Label("0.0");
         final Label endYl = new Label("0.0");
+         
+        beginXl.setPreferredW(Display.getInstance().getDisplayWidth()/3);
+        beginYl.setPreferredW(Display.getInstance().getDisplayWidth()/3);
+        endXl.setPreferredW(Display.getInstance().getDisplayWidth()/3);
+        endYl.setPreferredW(Display.getInstance().getDisplayWidth()/3);
+        
         
         final Slider beginX = new Slider();
         final Slider beginY = new Slider();
         final Slider endX = new Slider();
         final Slider endY = new Slider();
-        beginX.setProgress(50); beginY.setProgress(50); endX.setProgress(50); endY.setProgress(50);
+        beginX.setProgress(50); beginY.setProgress(50); endX.setProgress(50); endY.setProgress(75);
         beginX.setEditable(true); beginY.setEditable(true); endX.setEditable(true); endY.setEditable(true);
         spinnersContainer.addComponent(beginX); spinnersContainer.addComponent(beginXl);
         spinnersContainer.addComponent(beginY); spinnersContainer.addComponent(beginYl);
@@ -73,26 +86,46 @@ public class main {
                         endX.getProgress()*div+minValue,
                         endY.getProgress()*div+minValue
                 );
+                animateZone.setMotion(
+                        (float) (beginX.getProgress()*div+minValue),
+                        (float) (beginY.getProgress()*div+minValue),
+                        (float) (endX.getProgress()*div+minValue),
+                        (float) (endY.getProgress()*div+minValue)
+                );
                 beginXl.setText(new Double(beginX.getProgress()*div+minValue).toString());
                 beginYl.setText(new Double(beginY.getProgress()*div+minValue).toString());
                 endXl.setText(new Double(endX.getProgress()*div+minValue).toString());
                 endYl.setText(new Double(endY.getProgress()*div+minValue).toString());
             }
         };
+        onChange.actionPerformed(null);
         beginX.addActionListener(onChange);
         beginY.addActionListener(onChange);
         endX.addActionListener(onChange);
         endY.addActionListener(onChange);
         
         Button bt = new Button("animate");
-        bt.addActionListener(onChange);
+        bt.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                animateZone.removeComponent(animatedLabel);
+                animateZone.addComponent(BorderLayout.WEST,animatedLabel);
+                animateZone.revalidate();
+                animateZone.removeComponent(animatedLabel);
+                animateZone.addComponent(BorderLayout.EAST,animatedLabel);
+                animateZone.animateLayoutAndWait(800);
+            }
+        });
         
         controlContainer.addComponent(BorderLayout.SOUTH, spinnersContainer);
         hi.setLayout(new BorderLayout());
         
-        hi.addComponent(BorderLayout.CENTER, controlContainer);
-        hi.addComponent(BorderLayout.SOUTH, bt);
-
+        container.addComponent(BorderLayout.CENTER, controlContainer);
+        container.addComponent(BorderLayout.SOUTH, bt);
+        
+        
+        hi.addComponent(BorderLayout.CENTER, container);
+        hi.addComponent(BorderLayout.SOUTH, animateZone);
+        
         hi.show();
     }
 

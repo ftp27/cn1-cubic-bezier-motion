@@ -38,7 +38,7 @@ public class CustomMotionContainer extends Container{
     @Override
     protected Motion createAnimateMotion(int start, int destination, int duration) {
         int dur = duration;//int dur = (int) (duration*(new Random().nextDouble()));
-        Log.p("duration = "+dur);
+        Log.p("p1 = "+p1+"; p2 = "+p2+"; p3 = "+p3+"; p4 = "+p4+";");
         return Motion.createCubicBezierMotion(start, destination, dur, p1,p2,p3,p4);
     }
 }

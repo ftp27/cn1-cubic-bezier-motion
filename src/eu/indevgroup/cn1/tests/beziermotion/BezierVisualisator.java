@@ -5,6 +5,7 @@
  */
 package eu.indevgroup.cn1.tests.beziermotion;
 
+import com.codename1.io.Log;
 import com.codename1.ui.Component;
 import com.codename1.ui.Display;
 import com.codename1.ui.Graphics;
